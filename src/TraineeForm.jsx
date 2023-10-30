@@ -1,60 +1,81 @@
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import React, { useState } from "react";
 
 export default function TraineeForm() {
   const [fetched, setFetched] = useState(false);
-  const [trainee, setTrainee] = useState([]);
-  const [updateTrainerId, setUpdateTrainerId] = useState(null);
-  const [updateTrainerName, setUpdateTrainerName] = useState("");
+  const [trainees, setTrainees] = useState([]);
+  const [updateTraineeId, setUpdateTraineeId] = useState(null);
+  const [updateTraineeName, setUpdateTraineeName] = useState("");
   const [showAddForm, setShowAddForm] = useState(false);
-  const [trainerName, setTrainerName] = useState("");
-  const [techSkills, setTechSkills] = useState([]);
+  const [traineeName, setTraineeName] = useState("");
+  const [internStartDate, setInternStartDate] = useState("");
+  const [internEndDate, setInternEndDate] = useState("");
+  const [internCompleted, setInternCompleted] = useState(false);
 
-  function handleFetchTrainee(e) {
-    e.preventDefault();
+  useEffect(() => {
+    handleFetchTrainees();
+  }, []);
+
+  function handleFetchTrainees() {
     axios
       .get("http://localhost:8080/api/trainee/getAll")
       .then((response) => {
-        setTrainee(response.data);
+        setTrainees(response.data);
         setFetched(true);
       })
       .catch((error) => {
         console.error(error);
       });
   }
-  function handleUpdateTrainer(id) {
-    setUpdateTrainerId(id);
-    const trainerToUpdate = trainers.find((trainer) => trainer.id === id);
-    setUpdateTrainerName(trainerToUpdate.name);
+
+  function handleUpdateTrainee(id) {
+    setUpdateTraineeId(id);
+    const traineeToUpdate = trainees.find((trainee) => trainee.id === id);
+    setUpdateTraineeName(traineeToUpdate.name);
+    setInternStartDate(traineeToUpdate.internStartDate);
+    setInternEndDate(traineeToUpdate.internEndDate);
+    setInternCompleted(traineeToUpdate.internCompleted);
   }
 
   function handleSaveUpdate() {
     axios
-      .put(`http://localhost:8080/api/trainer/editTrainer/${updateTrainerId}`, {
-        name: updateTrainerName,
+      .put(`http://localhost:8080/api/trainee/update/${updateTraineeId}`, {
+        name: updateTraineeName,
+        internStartDate: internStartDate,
+        internEndDate: internEndDate,
+        internCompleted: internCompleted,
       })
       .then((response) => {
-        setTrainee((preTrainers) =>
-          preTrainers.map((trainer) =>
-            trainer.id === updateTrainerId
-              ? { ...trainer, name: updateTrainerName }
-              : trainer
+        setTrainees((preTrainees) =>
+          preTrainees.map((trainee) =>
+            trainee.id === updateTraineeId
+              ? {
+                  ...trainee,
+                  name: updateTraineeName,
+                  internStartDate: internStartDate,
+                  internEndDate: internEndDate,
+                  internCompleted: internCompleted,
+                }
+              : trainee
           )
         );
-        setUpdateTrainerId(null);
-        setUpdateTrainerName("");
+        setUpdateTraineeId(null);
+        setUpdateTraineeName("");
+        setInternStartDate("");
+        setInternEndDate("");
+        setInternCompleted(false);
       })
       .catch((error) => {
         console.error(error);
       });
   }
 
-  function handleDeleteTrainer(id) {
+  function handleDeleteTrainee(id) {
     axios
-      .delete(`http://localhost:8080/api/trainer/deleteTrainer/${id}`)
+      .delete(`http://localhost:8080/api/trainee/delete/${id}`)
       .then((response) => {
-        setTrainee((prevTrainers) =>
-          prevTrainers.filter((trainer) => trainer.id !== id)
+        setTrainees((prevTrainees) =>
+          prevTrainees.filter((trainee) => trainee.id !== id)
         );
       })
       .catch((error) => {
@@ -62,136 +83,156 @@ export default function TraineeForm() {
       });
   }
 
-  function handleAddTrainer(event) {
+  function handleAddTrainee(event) {
     event.preventDefault();
 
-    if (trainerName.trim() === "" || techSkills.length === 0) {
+    if (
+      traineeName.trim() === "" ||
+      internStartDate.trim() === "" ||
+      internEndDate.trim() === ""
+    ) {
       alert("Please fill in all fields");
       return;
     }
 
     const data = {
-      name: trainerName,
-      techSkills: techSkills.map((skillId) => ({ id: skillId })),
+      name: traineeName,
+      internStartDate: internStartDate,
+      internEndDate: internEndDate,
+      internCompleted: internCompleted,
     };
 
     axios
-      .post("http://localhost:8080/api/trainer/createTrainer", data)
+      .post("http://localhost:8080/api/trainee/create", data)
       .then((response) => {
-        console.log(response);
+        setTrainees((preTrainees) => [...preTrainees, response.data]);
+        setTraineeName("");
+        setInternStartDate("");
+        setInternEndDate("");
+        setInternCompleted(false);
       })
       .catch((error) => {
         console.error(error);
       });
   }
-  function handleTechSkillsChange(event) {
-    const selectedTechSkills = Array.from(
-      event.target.selectedOptions,
-      (option) => option.value
-    );
-    setTechSkills(selectedTechSkills);
-  }
 
   const openComponent = (component) => {
-    setShowAddForm(component === "ADD_TRAINER");
+    setShowAddForm(component === "ADD_TRAINEE");
   };
+
   function handleBack() {
     setShowAddForm(false);
   }
 
   return (
     <div className="container mt-4">
-      {/* {fetched ? null :( */}
-      <button onClick={handleFetchTrainee} className="btn btn-primary">
-        Trainee
-      </button>
-      {/* )} */}
       {showAddForm && (
-        <button className="btn btn-primary" onClick={handleBack}>
-          Back
+        <button className="btn btn-secondary" onClick={handleBack}>
+          Close Form
         </button>
       )}
       {showAddForm && (
         <div className="card mt-4">
           <div className="card-body">
-            <h5 className="card-title">Add Trainer</h5>
-            <form onSubmit={handleAddTrainer}>
+            <h5 className="card-title">Add Trainee</h5>
+            <form onSubmit={handleAddTrainee}>
               <div className="form-group">
-                <label htmlFor="trainerName">Trainer Name</label>
+                <label htmlFor="traineeName">Trainee Name</label>
                 <input
                   type="text"
                   className="form-control"
-                  id="trainerName"
-                  value={trainerName}
-                  onChange={(e) => setTrainerName(e.target.value)}
+                  id="traineeName"
+                  value={traineeName}
+                  onChange={(e) => setTraineeName(e.target.value)}
                 />
               </div>
-
               <div className="form-group">
-                <label htmlFor="techSkills">Tech Skills</label>
-                <select
-                  multiple
+                <label htmlFor="internStartDate">Intern Start Date</label>
+                <input
+                  type="date"
                   className="form-control"
-                  id="techSkills"
-                  onChange={handleTechSkillsChange}
-                >
-                  {techSkills.map((skill) => (
-                    <option key={skill.id} value={skill.id}>
-                      {skill.name}
-                    </option>
-                  ))}
-                </select>
+                  id="internStartDate"
+                  value={internStartDate}
+                  onChange={(e) => setInternStartDate(e.target.value)}
+                />
               </div>
-
-              <button type="submit" className="btn btn-primary">
-                Submit
+              <div className="form-group">
+                <label htmlFor="internEndDate">Intern End Date</label>
+                <input
+                  type="date"
+                  className="form-control"
+                  id="internEndDate"
+                  value={internEndDate}
+                  onChange={(e) => setInternEndDate(e.target.value)}
+                />
+              </div>
+              <div className="form-check">
+                <input
+                  type="checkbox"
+                  className="form-check-input"
+                  id="internCompleted"
+                  checked={internCompleted}
+                  onChange={(e) => setInternCompleted(e.target.checked)}
+                />
+                <label className="form-check-label" htmlFor="internCompleted">
+                  Intern Completed
+                </label>
+              </div>
+              <button type="submit" className="btn btn-primary mt-2">
+                Add
               </button>
             </form>
           </div>
         </div>
       )}
-      {fetched && (
+      {!showAddForm && (
         <div className="">
           <button
             className="btn btn-primary"
-            onClick={() => openComponent("ADD_TRAINER")}
+            onClick={() => openComponent("ADD_TRAINEE")}
           >
-            Add Trainer
+            Add Trainee
           </button>
         </div>
       )}
-      {fetched && (
+      {fetched && !showAddForm && (
         <div className="card mt-4">
           <div className="card-body">
-            <h5 className="card-title">Trainers</h5>
+            <h5 className="card-title">Trainees</h5>
             <div className="table-responsive">
               <table className="table">
                 <thead>
                   <tr>
                     <th>ID</th>
                     <th>Name</th>
+                    <th>Intern Start Date</th>
+                    <th>Intern End Date</th>
+                    <th>Intern Completed</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {trainee.map((trainer) => (
-                    <tr key={trainer.id}>
-                      <td>{trainer.id}</td>
+                  {trainees.map((trainee, index) => (
+                    <tr key={trainee.id}>
+                      <td>{index + 1}</td>
                       <td>
-                        {updateTrainerId === trainer.id ? (
+                        {updateTraineeId === trainee.id ? (
                           <input
                             type="text"
-                            value={updateTrainerName}
+                            value={updateTraineeName}
                             onChange={(e) =>
-                              setUpdateTrainerName(e.target.value)
+                              setUpdateTraineeName(e.target.value)
                             }
                           />
                         ) : (
-                          trainer.name
+                          trainee.name
                         )}
                       </td>
+                      <td>{trainee.internStartDate}</td>
+                      <td>{trainee.internEndDate}</td>
+                      <td>{trainee.internCompleted ? "Yes" : "No"}</td>
                       <td>
-                        {updateTrainerId === trainer.id ? (
+                        {updateTraineeId === trainee.id ? (
                           <>
                             <button
                               className="btn btn-sm btn-success"
@@ -202,8 +243,8 @@ export default function TraineeForm() {
                             <button
                               className="btn btn-sm btn-secondary ms-2"
                               onClick={() => {
-                                setUpdateTrainerId(null);
-                                setUpdateTrainerName("");
+                                setUpdateTraineeId(null);
+                                setUpdateTraineeName("");
                               }}
                             >
                               Cancel
@@ -213,13 +254,13 @@ export default function TraineeForm() {
                           <>
                             <button
                               className="btn btn-sm btn-primary"
-                              onClick={() => handleUpdateTrainer(trainer.id)}
+                              onClick={() => handleUpdateTrainee(trainee.id)}
                             >
                               Update
                             </button>
                             <button
                               className="btn btn-sm btn-danger ms-2"
-                              onClick={() => handleDeleteTrainer(trainer.id)}
+                              onClick={() => handleDeleteTrainee(trainee.id)}
                             >
                               Delete
                             </button>

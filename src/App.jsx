@@ -5,6 +5,11 @@ import "bootstrap/dist/css/bootstrap.css";
 import TrainerForm from "./TrainerForm";
 import TechSkillsList from "./TechSkillsList";
 import TraineeForm from "./TraineeForm";
+import AssessmentForm from "./AssessmentForm";
+import PerformanceReportForm from "./PerformanceReportForm";
+import ClassLinkForm from "./ClassLinkForm";
+import NotificationForm from "./NotificationForm";
+import Footer from "./Footer";
 
 function App() {
   return (
@@ -18,7 +23,7 @@ function App() {
         >
           <li className="nav-item" role="presentation">
             <button
-              className="nav-link w-100"
+              className="nav-link w-100 active"
               id="home-tab"
               data-bs-toggle="tab"
               data-bs-target="#home-tab-pane"
@@ -58,21 +63,62 @@ function App() {
               Trainee
             </button>
           </li>
-          {/* <li className="nav-item" role="presentation">
+          <li className="nav-item" role="presentation">
             <button
-              className="nav-link"
-              id="disabled-tab"
+              className="nav-link w-100"
+              id="assessment-tab"
               data-bs-toggle="tab"
-              data-bs-target="#disabled-tab-pane"
+              data-bs-target="#assessment-tab-pane"
               type="button"
               role="tab"
-              aria-controls="disabled-tab-pane"
+              aria-controls="assessment-tab-pane"
               aria-selected="false"
-              disabled
             >
-              Disabled
+              Assessment
             </button>
-          </li> */}
+          </li>
+          <li className="nav-item" role="presentation">
+            <button
+              className="nav-link w-100"
+              id="pr-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#pr-tab-pane"
+              type="button"
+              role="tab"
+              aria-controls="pr-tab-pane"
+              aria-selected="false"
+            >
+              Performance
+            </button>
+          </li>
+          <li className="nav-item" role="presentation">
+            <button
+              className="nav-link w-100"
+              id="cl-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#cl-tab-pane"
+              type="button"
+              role="tab"
+              aria-controls="cl-tab-pane"
+              aria-selected="false"
+            >
+              Class Link
+            </button>
+          </li>
+          <li className="nav-item" role="presentation">
+            <button
+              className="nav-link w-100"
+              id="notification-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#notification-tab-pane"
+              type="button"
+              role="tab"
+              aria-controls="notification-tab-pane"
+              aria-selected="false"
+            >
+              Notification
+            </button>
+          </li>
         </ul>
         <div className="tab-content col-10" id="myTabContent">
           <div
@@ -80,7 +126,7 @@ function App() {
             id="home-tab-pane"
             role="tabpanel"
             aria-labelledby="home-tab"
-            tabindex="0"
+            tabIndex="0"
           >
             <TechSkillsList />
           </div>
@@ -89,7 +135,7 @@ function App() {
             id="profile-tab-pane"
             role="tabpanel"
             aria-labelledby="profile-tab"
-            tabindex="0"
+            tabIndex="0"
           >
             <TrainerForm />
           </div>
@@ -98,30 +144,67 @@ function App() {
             id="contact-tab-pane"
             role="tabpanel"
             aria-labelledby="contact-tab"
-            tabindex="0"
+            tabIndex="0"
           >
             <TraineeForm />
           </div>
-          {/* <div
+          <div
             className="tab-pane fade"
-            id="disabled-tab-pane"
+            id="assessment-tab-pane"
             role="tabpanel"
-            aria-labelledby="disabled-tab"
-            tabindex="0"
+            aria-labelledby="assessment-tab"
+            tabIndex="0"
           >
-            ...
-          </div> */}
+            <AssessmentForm />
+          </div>
+          <div
+            className="tab-pane fade"
+            id="pr-tab-pane"
+            role="tabpanel"
+            aria-labelledby="pr-tab"
+            tabIndex="0"
+          >
+            <PerformanceReportForm />
+          </div>
+          <div
+            className="tab-pane fade"
+            id="cl-tab-pane"
+            role="tabpanel"
+            aria-labelledby="cl-tab"
+            tabIndex="0"
+          >
+            <ClassLinkForm />
+          </div>
+          <div
+            className="tab-pane fade"
+            id="notification-tab-pane"
+            role="tabpanel"
+            aria-labelledby="notification-tab"
+            tabIndex="0"
+          >
+            <NotificationForm />
+          </div>
+          {/* <div
+              className="tab-pane fade"
+              id="disabled-tab-pane"
+              role="tabpanel"
+              aria-labelledby="disabled-tab"
+              tabIndex="0"
+            >
+              ...
+            </div> */}
         </div>
         {/* <button classNameName="btn btn-sm btn-primary ms-2">Attendence</button>
-        <button classNameName="btn btn-sm btn-primary ms-2">Assessment</button>
-        <button classNameName="btn btn-sm btn-primary ms-2">
-          className link
-        </button>
-        <button classNameName="btn btn-sm btn-primary ms-2">
-          Notification
-        </button>
-        <button classNameName="btn btn-sm btn-primary ms-2">Performace</button> */}
+          <button classNameName="btn btn-sm btn-primary ms-2">Assessment</button>
+          <button classNameName="btn btn-sm btn-primary ms-2">
+            className link
+          </button>
+          <button classNameName="btn btn-sm btn-primary ms-2">
+            Notification
+          </button>
+          <button classNameName="btn btn-sm btn-primary ms-2">Performace</button> */}
       </div>
+      <Footer />
     </>
   );
 }

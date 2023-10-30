@@ -1,12 +1,16 @@
 import React from "react";
+
 export default function Navbar() {
   return (
-    <nav className="navbar navbar-expand-lg   bg-white">
+    <nav
+      className="navbar navbar-expand-lg"
+      style={{ backgroundColor: "#53A598" }}
+    >
       <div className="container-fluid">
         <img
           className="navbar-brand"
           src="../src/assets/logo.png"
-          height={"50px"}
+          height={"100px"}
           width={"100px"}
           alt="logo"
         ></img>

@@ -1,26 +1,26 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import "./trainer.css";
 
-export default function TrainerForm() {
+export default function AssessmentForm() {
   const [fetched, setFetched] = useState(false);
-  const [trainers, setTrainers] = useState([]);
-  const [updateTrainerId, setUpdateTrainerId] = useState(null);
-  const [updateTrainerName, setUpdateTrainerName] = useState("");
+  const [assessments, setAssessments] = useState([]);
+  const [updateAssessmentId, setUpdateAssessmentId] = useState(null);
+  const [updateSkill, setUpdateSkill] = useState("");
+  const [updateDate, setUpdateDate] = useState("");
   const [showAddForm, setShowAddForm] = useState(false);
-  const [trainerName, setTrainerName] = useState("");
   const [techSkills, setTechSkills] = useState([]);
   const [selectedTechSkills, setSelectedTechSkills] = useState([]);
+  const [date, setDate] = useState("");
 
   useEffect(() => {
-    handleFetchTrainers();
+    handleFetchAssessments();
   }, []);
 
-  function handleFetchTrainers() {
+  function handleFetchAssessments() {
     axios
-      .get("http://localhost:8080/api/trainer/getAllTrainers")
+      .get("http://localhost:8080/api/assessment/getAllAssessments")
       .then((response) => {
-        setTrainers(response.data);
+        setAssessments(response.data);
         setFetched(true);
       })
       .catch((error) => {
@@ -28,39 +28,51 @@ export default function TrainerForm() {
       });
   }
 
-  function handleUpdateTrainer(id) {
-    setUpdateTrainerId(id);
-    const trainerToUpdate = trainers.find((trainer) => trainer.id === id);
-    setUpdateTrainerName(trainerToUpdate.name);
+  function handleUpdateAssessment(id) {
+    setUpdateAssessmentId(id);
+    const assessmentToUpdate = assessments.find(
+      (assessment) => assessment.id === id
+    );
+    setUpdateSkill(assessmentToUpdate.skill);
+    setUpdateDate(assessmentToUpdate.date);
   }
 
   function handleSaveUpdate() {
     axios
-      .put(`http://localhost:8080/api/trainer/editTrainer/${updateTrainerId}`, {
-        name: updateTrainerName,
-      })
+      .put(
+        `http://localhost:8080/api/assessment/editAssessment/${updateAssessmentId}`,
+        {
+          skill: updateSkill,
+          date: updateDate,
+        }
+      )
       .then((response) => {
-        setTrainers((preTrainers) =>
-          preTrainers.map((trainer) =>
-            trainer.id === updateTrainerId
-              ? { ...trainer, name: updateTrainerName }
-              : trainer
+        setAssessments((preAssessments) =>
+          preAssessments.map((assessment) =>
+            assessment.id === updateAssessmentId
+              ? {
+                  ...assessment,
+                  skill: updateSkill,
+                  date: updateDate,
+                }
+              : assessment
           )
         );
-        setUpdateTrainerId(null);
-        setUpdateTrainerName("");
+        setUpdateAssessmentId(null);
+        setUpdateSkill("");
+        setUpdateDate("");
       })
       .catch((error) => {
         console.error(error);
       });
   }
 
-  function handleDeleteTrainer(id) {
+  function handleDeleteAssessment(id) {
     axios
-      .delete(`http://localhost:8080/api/trainer/deleteTrainer/${id}`)
+      .delete(`http://localhost:8080/api/assessment/deleteAssessment/${id}`)
       .then((response) => {
-        setTrainers((prevTrainers) =>
-          prevTrainers.filter((trainer) => trainer.id !== id)
+        setAssessments((prevAssessments) =>
+          prevAssessments.filter((assessment) => assessment.id !== id)
         );
       })
       .catch((error) => {
@@ -68,27 +80,25 @@ export default function TrainerForm() {
       });
   }
 
-  function handleAddTrainer(event) {
+  function handleAddAssessment(event) {
     event.preventDefault();
 
-    if (trainerName.trim() === "" || techSkills.length === 0) {
+    if (selectedTechSkills.length === 0 || date.trim() === "") {
       alert("Please fill in all fields");
       return;
     }
 
     const data = {
-      name: trainerName,
-      techSkills: selectedTechSkills.map((skillId) => ({ id: skillId })),
+      skills: selectedTechSkills.map((skillId) => ({ id: skillId })),
+      date: date.trim(),
     };
 
     axios
-      .post("http://localhost:8080/api/trainer/createTrainer", data)
+      .post("http://localhost:8080/api/assessment/createAssessment", data)
       .then((response) => {
-        // setTrainers(respon se.data);
-        setTrainers((preTrainers) => [...preTrainers, response.data]);
-        setTrainerName("");
+        setAssessments((preAssessments) => [...preAssessments, response.data]);
         setSelectedTechSkills([]);
-        // })
+        setDate("");
       })
       .catch((error) => {
         console.error(error);
@@ -114,8 +124,12 @@ export default function TrainerForm() {
       .catch((error) => {
         console.error(error);
       });
-    setShowAddForm(component === "ADD_TRAINER");
+    setShowAddForm(component === "ADD_ASSESSMENT");
   };
+  // const openComponent = (component) => {
+  //   setShowAddForm(component === "ADD_ASSESSMENT");
+  // };
+
   function handleBack() {
     setShowAddForm(false);
   }
@@ -130,19 +144,18 @@ export default function TrainerForm() {
       {showAddForm && (
         <div className="card mt-4">
           <div className="card-body">
-            <h5 className="card-title">Add Trainer</h5>
-            <form onSubmit={handleAddTrainer}>
-              <div className="form-group">
-                <label htmlFor="trainerName">Trainer Name</label>
+            <h5 className="card-title">Add Assessment</h5>
+            <form onSubmit={handleAddAssessment}>
+              {/* <div className="form-group">
+                <label htmlFor="skill">Skill</label>
                 <input
                   type="text"
                   className="form-control"
-                  id="trainerName"
-                  value={trainerName}
-                  onChange={(e) => setTrainerName(e.target.value)}
+                  id="skill"
+                  value={skill}
+                  onChange={(e) => setSkill(e.target.value)}
                 />
-              </div>
-
+              </div> */}
               <div className="form-group">
                 <label htmlFor="techSkills">Tech Skills</label>
 
@@ -167,6 +180,16 @@ export default function TrainerForm() {
                 ))}
               </div>
 
+              <div className="form-group">
+                <label htmlFor="date">Date</label>
+                <input
+                  type="date"
+                  className="form-control"
+                  id="date"
+                  value={date}
+                  onChange={(e) => setDate(e.target.value)}
+                />
+              </div>
               <button type="submit" className="btn btn-primary mt-2">
                 Add
               </button>
@@ -178,59 +201,54 @@ export default function TrainerForm() {
         <div className="">
           <button
             className="btn btn-primary"
-            onClick={() => openComponent("ADD_TRAINER")}
+            onClick={() => openComponent("ADD_ASSESSMENT")}
           >
-            Add Trainer
+            Add Assessment
           </button>
         </div>
       )}
       {fetched && !showAddForm && (
         <div className="card mt-4">
           <div className="card-body">
-            {/* <h5 className="card-title">Trainers</h5> */}
+            <h5 className="card-title">Assessments</h5>
             <div className="table-responsive">
               <table className="table">
-                <thead className="table-header">
+                <thead>
                   <tr>
                     <th>ID</th>
-                    <th>Name</th>
-                    <th>Traines Count</th>
-                    <th>Tech skills</th>
+                    <th>Skill</th>
+                    <th>Date</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {trainers.map((trainer, index) => (
-                    <tr key={trainer.id}>
+                  {assessments.map((assessment, index) => (
+                    <tr key={assessment.id}>
                       <td>{index + 1}</td>
                       <td>
-                        {updateTrainerId === trainer.id ? (
+                        {updateAssessmentId === assessment.id ? (
                           <input
                             type="text"
-                            value={updateTrainerName}
-                            onChange={(e) =>
-                              setUpdateTrainerName(e.target.value)
-                            }
+                            value={updateSkill}
+                            onChange={(e) => setUpdateSkill(e.target.value)}
                           />
                         ) : (
-                          trainer.name
+                          assessment.skill
                         )}
                       </td>
-                      <td>{trainer.trainees && trainer.trainees.length}</td>
                       <td>
-                        {/* {" "} */}
-                        {trainer.techSkills &&
-                          trainer.techSkills.map((skill) => (
-                            <span
-                              className="badge rounded-pill text-bg-warning me-2"
-                              key={skill.id}
-                            >
-                              {skill.name}
-                            </span>
-                          ))}
+                        {updateAssessmentId === assessment.id ? (
+                          <input
+                            type="date"
+                            value={updateDate}
+                            onChange={(e) => setUpdateDate(e.target.value)}
+                          />
+                        ) : (
+                          assessment.date
+                        )}
                       </td>
                       <td>
-                        {updateTrainerId === trainer.id ? (
+                        {updateAssessmentId === assessment.id ? (
                           <>
                             <button
                               className="btn btn-sm btn-success"
@@ -241,8 +259,9 @@ export default function TrainerForm() {
                             <button
                               className="btn btn-sm btn-secondary ms-2"
                               onClick={() => {
-                                setUpdateTrainerId(null);
-                                setUpdateTrainerName("");
+                                setUpdateAssessmentId(null);
+                                setUpdateSkill("");
+                                setUpdateDate("");
                               }}
                             >
                               Cancel
@@ -252,15 +271,19 @@ export default function TrainerForm() {
                           <>
                             <button
                               className="btn btn-sm btn-primary"
-                              onClick={() => handleUpdateTrainer(trainer.id)}
+                              onClick={() =>
+                                handleUpdateAssessment(assessment.id)
+                              }
                             >
-                              <i class="fa-solid fa-pen-to-square"></i>
+                              Update
                             </button>
                             <button
                               className="btn btn-sm btn-danger ms-2"
-                              onClick={() => handleDeleteTrainer(trainer.id)}
+                              onClick={() =>
+                                handleDeleteAssessment(assessment.id)
+                              }
                             >
-                              <i class="fa-regular fa-trash-can"></i>
+                              Delete
                             </button>
                           </>
                         )}
