@@ -218,7 +218,6 @@ export default function TrainerForm() {
                       </td>
                       <td>{trainer.trainees && trainer.trainees.length}</td>
                       <td>
-                        {/* {" "} */}
                         {trainer.techSkills &&
                           trainer.techSkills.map((skill) => (
                             <span

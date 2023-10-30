@@ -1,16 +1,17 @@
 import React from "react";
 
 export default function Navbar() {
+  function fetchTrainees() {}
   return (
     <nav
-      className="navbar navbar-expand-lg"
-      style={{ backgroundColor: "#53A598" }}
+      className="navbar navbar-expand"
+      style={{ backgroundColor: "#bae2dda6" }}
     >
       <div className="container-fluid">
         <img
           className="navbar-brand"
           src="../src/assets/logo.png"
-          height={"100px"}
+          height={"50px"}
           width={"100px"}
           alt="logo"
         ></img>
@@ -28,13 +29,8 @@ export default function Navbar() {
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             <li className="nav-item">
-              <a className="nav-link active" aria-current="page" href="#">
+              <a className="nav-link active" aria-current="page" href="/home">
                 Home
-              </a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link" href="#">
-                Link
               </a>
             </li>
             <li className="nav-item dropdown">
@@ -46,38 +42,37 @@ export default function Navbar() {
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
               >
-                Dropdown
+                Select tech Skill
               </a>
               <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
                 <li>
-                  <a className="dropdown-item" href="#">
-                    Action
-                  </a>
+                  <button
+                    className="dropdown-item"
+                    onClick={fetchTrainees("JAVA")}
+                  >
+                    Java
+                  </button>
+                  {/* <Link to={"/table/JAVA"} className="dropdown-item">
+                    JAVA
+                  </Link> */}
                 </li>
                 <li>
-                  <a className="dropdown-item" href="#">
-                    Another action
-                  </a>
+                  <button
+                    className="dropdown-item"
+                    onClick={fetchTrainees("SQL")}
+                  >
+                    SQL
+                  </button>
                 </li>
                 <li>
-                  <hr className="dropdown-divider" />
-                </li>
-                <li>
-                  <a className="dropdown-item" href="#">
-                    Something else here
-                  </a>
+                  <button
+                    className="dropdown-item"
+                    onClick={fetchTrainees("PYTHON")}
+                  >
+                    Python
+                  </button>
                 </li>
               </ul>
-            </li>
-            <li className="nav-item">
-              <a
-                className="nav-link disabled"
-                href="#"
-                tabIndex="-1"
-                aria-disabled="true"
-              >
-                Disabled
-              </a>
             </li>
           </ul>
           <form className="d-flex">
