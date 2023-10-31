@@ -14,6 +14,8 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Home } from "./Home";
 import { Dashboard } from "./Dashboard";
 import { Table } from "./Table";
+import UserForm from "./UserForm";
+import RoleForm from "./RoleForm";
 
 function App() {
   return (
@@ -25,6 +27,8 @@ function App() {
           <Route path="/home" element={<Home />} />
           <Route path="/dashboard/:id" element={<Dashboard />} />
           <Route path="/table/:id" element={<Table />} />
+          <Route path="/user/:id" element={<UserForm />} />
+          <Route path="/role/:id" element={<RoleForm />} />
         </Routes>
       </BrowserRouter>
       <Footer />

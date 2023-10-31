@@ -6,6 +6,8 @@ import PerformanceReportForm from "./PerformanceReportForm";
 import TechSkillsList from "./TechSkillsList";
 import TraineeForm from "./TraineeForm";
 import TrainerForm from "./TrainerForm";
+import UserForm from "./UserForm";
+import RoleForm from "./RoleForm";
 
 export const Array = [
   { name: "techskills", label: "Tech Skills", component: <TechSkillsList /> },
@@ -23,6 +25,8 @@ export const Array = [
     label: "Notification",
     component: <NotificationForm />,
   },
+  { name: "user", label: "user", component: <UserForm /> },
+  { name: "role", label: "role", component: <RoleForm /> },
 ];
 
 export const Dashboard = () => {
