@@ -78,7 +78,7 @@ export default function TrainerForm() {
 
     const data = {
       name: trainerName,
-      techSkills: selectedTechSkills.map((skillId) => ({ id: skillId })),
+      techSkills: selectedTechSkills,
     };
 
     axios
@@ -88,6 +88,7 @@ export default function TrainerForm() {
         setTrainers((preTrainers) => [...preTrainers, response.data]);
         setTrainerName("");
         setSelectedTechSkills([]);
+        setShowAddForm(false);
         // })
       })
       .catch((error) => {
@@ -95,12 +96,12 @@ export default function TrainerForm() {
       });
   }
 
-  function handleTechSkillsChange(skillId) {
+  function handleTechSkillsChange(skill) {
     setSelectedTechSkills((prevSkills) => {
-      if (prevSkills.includes(skillId)) {
-        return prevSkills.filter((id) => id !== skillId);
+      if (prevSkills.includes(skill)) {
+        return prevSkills.filter((s) => s.id !== skill.id);
       } else {
-        return [...prevSkills, skillId];
+        return [...prevSkills, skill];
       }
     });
   }
@@ -153,8 +154,8 @@ export default function TrainerForm() {
                       type="checkbox"
                       value={skill.id}
                       id={`flexCheckDefault_${skill.id}`}
-                      // checked={selectedTechSkills.includes(skill.id)}
-                      onChange={() => handleTechSkillsChange(skill.id)}
+                      checked={selectedTechSkills.includes(skill)}
+                      onChange={() => handleTechSkillsChange(skill)}
                     />
 
                     <label
@@ -189,8 +190,8 @@ export default function TrainerForm() {
           <div className="card-body">
             {/* <h5 className="card-title">Trainers</h5> */}
             <div className="table-responsive">
-              <table className="table">
-                <thead className="table-header">
+              <table className="table table-borderless">
+                <thead className="table-primary yui">
                   <tr>
                     <th>ID</th>
                     <th>Name</th>

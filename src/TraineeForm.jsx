@@ -110,6 +110,7 @@ export default function TraineeForm() {
         setInternStartDate("");
         setInternEndDate("");
         setInternCompleted(false);
+        setShowAddForm(false);
       })
       .catch((error) => {
         console.error(error);

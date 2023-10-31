@@ -89,7 +89,7 @@ export default function AssessmentForm() {
     }
 
     const data = {
-      skills: selectedTechSkills.map((skillId) => ({ id: skillId })),
+      skill: selectedTechSkills,
       date: date.trim(),
     };
 
@@ -99,18 +99,19 @@ export default function AssessmentForm() {
         setAssessments((preAssessments) => [...preAssessments, response.data]);
         setSelectedTechSkills([]);
         setDate("");
+        setShowAddForm(false);
       })
       .catch((error) => {
         console.error(error);
       });
   }
 
-  function handleTechSkillsChange(skillId) {
+  function handleTechSkillsChange(skill) {
     setSelectedTechSkills((prevSkills) => {
-      if (prevSkills.includes(skillId)) {
-        return prevSkills.filter((id) => id !== skillId);
+      if (prevSkills.includes(skill)) {
+        return prevSkills.filter((s) => s.id !== skill.id);
       } else {
-        return [...prevSkills, skillId];
+        return [...prevSkills, skill];
       }
     });
   }
@@ -126,9 +127,6 @@ export default function AssessmentForm() {
       });
     setShowAddForm(component === "ADD_ASSESSMENT");
   };
-  // const openComponent = (component) => {
-  //   setShowAddForm(component === "ADD_ASSESSMENT");
-  // };
 
   function handleBack() {
     setShowAddForm(false);
@@ -167,7 +165,7 @@ export default function AssessmentForm() {
                       value={skill.id}
                       id={`flexCheckDefault_${skill.id}`}
                       // checked={selectedTechSkills.includes(skill.id)}
-                      onChange={() => handleTechSkillsChange(skill.id)}
+                      onChange={() => handleTechSkillsChange(skill)}
                     />
 
                     <label
@@ -233,7 +231,14 @@ export default function AssessmentForm() {
                             onChange={(e) => setUpdateSkill(e.target.value)}
                           />
                         ) : (
-                          assessment.skill
+                          assessment.skill.map((s) => (
+                            <span
+                              className="badge rounded-pill text-bg-secondary me-2"
+                              key={s.id}
+                            >
+                              {s.name}
+                            </span>
+                          ))
                         )}
                       </td>
                       <td>

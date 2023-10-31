@@ -101,6 +101,7 @@ export default function NotificationForm() {
         ]);
         setMessage("");
         setDateTime("");
+        setShowAddForm(false);
       })
       .catch((error) => {
         console.error(error);

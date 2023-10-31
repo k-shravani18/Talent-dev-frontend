@@ -96,6 +96,7 @@ export default function ClassLinkForm() {
         setClassLinks((preLinks) => [...preLinks, response.data]);
         setLink("");
         setDateTime("");
+        setShowAddForm(false);
       })
       .catch((error) => {
         console.error(error);
@@ -125,7 +126,7 @@ export default function ClassLinkForm() {
               <div className="form-group">
                 <label htmlFor="link">Link</label>
                 <input
-                  type="text"
+                  type="url"
                   className="form-control"
                   id="link"
                   value={link}
@@ -185,7 +186,9 @@ export default function ClassLinkForm() {
                             onChange={(e) => setUpdateLink(e.target.value)}
                           />
                         ) : (
-                          link.link
+                          <a href={link.link} target="_blank">
+                            {link.link}
+                          </a>
                         )}
                       </td>
                       <td>

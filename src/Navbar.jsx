@@ -1,7 +1,23 @@
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 
 export default function Navbar() {
-  function fetchTrainees() {}
+  const [dropdown, setDropdown] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:8080/api/tech-skill/getAllSkills")
+      .then((response) => {
+        setDropdown(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
+
+  function fetchTrainees(id) {
+    window.location.href = "/table/" + id;
+  }
   return (
     <nav
       className="navbar navbar-expand"
@@ -45,33 +61,18 @@ export default function Navbar() {
                 Select tech Skill
               </a>
               <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
-                <li>
-                  <button
-                    className="dropdown-item"
-                    onClick={fetchTrainees("JAVA")}
-                  >
-                    Java
-                  </button>
-                  {/* <Link to={"/table/JAVA"} className="dropdown-item">
-                    JAVA
-                  </Link> */}
-                </li>
-                <li>
-                  <button
-                    className="dropdown-item"
-                    onClick={fetchTrainees("SQL")}
-                  >
-                    SQL
-                  </button>
-                </li>
-                <li>
-                  <button
-                    className="dropdown-item"
-                    onClick={fetchTrainees("PYTHON")}
-                  >
-                    Python
-                  </button>
-                </li>
+                {dropdown &&
+                  dropdown.map((skill) => (
+                    <li>
+                      <button
+                        className="dropdown-item"
+                        onClick={(e) => fetchTrainees(skill.id)}
+                        key={skill.id}
+                      >
+                        {skill.name}
+                      </button>
+                    </li>
+                  ))}
               </ul>
             </li>
           </ul>
